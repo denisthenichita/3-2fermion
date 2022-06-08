@@ -19,8 +19,7 @@ function space(::SiteType"3/2fermion";
                qnname_sz = "Sz",
                qnname_nf = "Nf",
                qnname_nfparity = "NfParity",
-               # Deprecated
-               conserve_parity = nothing)
+              )
   if !isnothing(conserve_parity)
     conserve_nfparity = conserve_parity
   end
@@ -54,16 +53,40 @@ function space(::SiteType"3/2fermion";
   return 4
 end
 
-state(::SiteType"3/2fermion",::StateName"Emp")  = 1
-state(::SiteType"3/2fermion",::StateName"Up")   = 2
-state(::SiteType"3/2fermion",::StateName"Dn")   = 3
-state(::SiteType"3/2fermion",::StateName"UpDn") = 4
+state(::SiteType"3/2fermion",::StateName"Emp")          = 1
+state(::SiteType"3/2fermion",::StateName"Up3")          = 2
+state(::SiteType"3/2fermion",::StateName"Up1")          = 3
+state(::SiteType"3/2fermion",::StateName"Dn1")          = 4
+state(::SiteType"3/2fermion",::StateName"Dn3")          = 5
+state(::SiteType"3/2fermion",::StateName"Up3Up1")       = 6
+state(::SiteType"3/2fermion",::StateName"Up3Dn1")       = 7
+state(::SiteType"3/2fermion",::StateName"Up3Dn3")       = 8
+state(::SiteType"3/2fermion",::StateName"Up1Dn1")       = 9
+state(::SiteType"3/2fermion",::StateName"Up1Dn3")       = 10
+state(::SiteType"3/2fermion",::StateName"Dn1Dn3")       = 11
+state(::SiteType"3/2fermion",::StateName"Up3Up1Dn1")    = 12
+state(::SiteType"3/2fermion",::StateName"Up3Up1Dn3")    = 13
+state(::SiteType"3/2fermion",::StateName"Up3Dn1Dn3")    = 14
+state(::SiteType"3/2fermion",::StateName"Up1Dn1Dn3")    = 15
+state(::SiteType"3/2fermion",::StateName"Up3Up1Dn1Dn3") = 16
+
 state(st::SiteType"3/2fermion",::StateName"0")    = state(st,StateName("Emp"))
 state(st::SiteType"3/2fermion",::StateName"⇑")    = state(st,StateName("Up3"))
 state(st::SiteType"3/2fermion",::StateName"↑")    = state(st,StateName("Up1"))
 state(st::SiteType"3/2fermion",::StateName"↓")    = state(st,StateName("Dn1"))
 state(st::SiteType"3/2fermion",::StateName"⇓")    = state(st,StateName("Dn3"))
-state(st::SiteType"3/2fermion",::StateName"↑↓")   = state(st,StateName("UpDn"))
+state(st::SiteType"3/2fermion",::StateName"⇑↑")   = state(st,StateName("Up3Up1"))
+state(st::SiteType"3/2fermion",::StateName"⇑↓")   = state(st,StateName("Up3Dn1"))
+state(st::SiteType"3/2fermion",::StateName"⇑⇓")   = state(st,StateName("Up3Dn3"))
+state(st::SiteType"3/2fermion",::StateName"↑↓")   = state(st,StateName("Up1Dn1"))
+state(st::SiteType"3/2fermion",::StateName"↑⇓")   = state(st,StateName("Up1Dn3"))
+state(st::SiteType"3/2fermion",::StateName"↓⇓")   = state(st,StateName("Dn1Dn3"))
+state(st::SiteType"3/2fermion",::StateName"⇑↑↓")   = state(st,StateName("Up3Up1Dn1"))
+state(st::SiteType"3/2fermion",::StateName"⇑↑⇓")   = state(st,StateName("Up3Up1Dn3"))
+state(st::SiteType"3/2fermion",::StateName"⇑↓⇓")   = state(st,StateName("Up3Dn1Dn3"))
+state(st::SiteType"3/2fermion",::StateName"↑↓⇓")   = state(st,StateName("Up1Dn1Dn3"))
+state(st::SiteType"3/2fermion",::StateName"⇑↑↓⇓")   = state(st,StateName("Up3Up1Dn1Dn3"))
+
 
 function op!(Op::ITensor,
              ::OpName"Nup",
