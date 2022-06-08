@@ -89,27 +89,48 @@ state(st::SiteType"3/2fermion",::StateName"⇑↑↓⇓") = state(st,StateName("
 
 
 function op!(Op::ITensor,
-             ::OpName"Nup",
+             ::OpName"Nup3",
              ::SiteType"3/2fermion",
              s::Index)
-  Op[s'=>2,s=>2] = 1.0
-  Op[s'=>4,s=>4] = 1.0
+  Op[s'=> 2,s=> 2]  = 1.0
+  Op[s'=> 6,s=> 6]  = 1.0
+  Op[s'=> 7,s=> 7]  = 1.0
+  Op[s'=> 8,s=> 8]  = 1.0
+  Op[s'=>12,s=>12]  = 1.0
+  Op[s'=>13,s=>13]  = 1.0
+  Op[s'=>14,s=>14]  = 1.0
+  Op[s'=>16,s=>16]  = 1.0
 end
 
 function op!(Op::ITensor,
-             ::OpName"Ndn",
+             ::OpName"Nup1",
              ::SiteType"3/2fermion",
              s::Index)
-  Op[s'=>3,s=>3] = 1.0
-  Op[s'=>4,s=>4] = 1.0
+  Op[s'=> 3,s=> 3]  = 1.0
+  Op[s'=> 6,s=> 6]  = 1.0
+  Op[s'=> 9,s=> 9]  = 1.0
+  Op[s'=>10,s=>10]  = 1.0
+  Op[s'=>12,s=>12]  = 1.0
+  Op[s'=>13,s=>13]  = 1.0
+  Op[s'=>15,s=>15]  = 1.0
+  Op[s'=>16,s=>16]  = 1.0
 end
 
 function op!(Op::ITensor,
-             ::OpName"Nupdn",
+             ::OpName"Ndn1",
              ::SiteType"3/2fermion",
              s::Index)
-  Op[s'=>4,s=>4] = 1.0
+# de completat
 end
+
+function op!(Op::ITensor,
+  ::OpName"Ndn3",
+  ::SiteType"3/2fermion",
+  s::Index)
+# de completat
+end
+
+
 
 function op!(Op::ITensor,
              ::OpName"Ntot",
