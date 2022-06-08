@@ -1,6 +1,6 @@
 """
     space(::SiteType"Electron"; 
-          conserve_qns = false,
+          conserve_qns = false, trying things out
           conserve_sz = conserve_qns,
           conserve_nf = conserve_qns,
           conserve_nfparity = conserve_qns,
