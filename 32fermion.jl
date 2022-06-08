@@ -81,11 +81,11 @@ state(st::SiteType"3/2fermion",::StateName"⇑⇓")   = state(st,StateName("Up3D
 state(st::SiteType"3/2fermion",::StateName"↑↓")   = state(st,StateName("Up1Dn1"))
 state(st::SiteType"3/2fermion",::StateName"↑⇓")   = state(st,StateName("Up1Dn3"))
 state(st::SiteType"3/2fermion",::StateName"↓⇓")   = state(st,StateName("Dn1Dn3"))
-state(st::SiteType"3/2fermion",::StateName"⇑↑↓")   = state(st,StateName("Up3Up1Dn1"))
-state(st::SiteType"3/2fermion",::StateName"⇑↑⇓")   = state(st,StateName("Up3Up1Dn3"))
-state(st::SiteType"3/2fermion",::StateName"⇑↓⇓")   = state(st,StateName("Up3Dn1Dn3"))
-state(st::SiteType"3/2fermion",::StateName"↑↓⇓")   = state(st,StateName("Up1Dn1Dn3"))
-state(st::SiteType"3/2fermion",::StateName"⇑↑↓⇓")   = state(st,StateName("Up3Up1Dn1Dn3"))
+state(st::SiteType"3/2fermion",::StateName"⇑↑↓")  = state(st,StateName("Up3Up1Dn1"))
+state(st::SiteType"3/2fermion",::StateName"⇑↑⇓")  = state(st,StateName("Up3Up1Dn3"))
+state(st::SiteType"3/2fermion",::StateName"⇑↓⇓")  = state(st,StateName("Up3Dn1Dn3"))
+state(st::SiteType"3/2fermion",::StateName"↑↓⇓")  = state(st,StateName("Up1Dn1Dn3"))
+state(st::SiteType"3/2fermion",::StateName"⇑↑↓⇓") = state(st,StateName("Up3Up1Dn1Dn3"))
 
 
 function op!(Op::ITensor,
