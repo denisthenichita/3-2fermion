@@ -1,5 +1,5 @@
 """
-    space(::SiteType"Electron"; 
+    space(::SiteType"3/2fermion"; 
           conserve_qns = false, trying things out
           conserve_sz = conserve_qns,
           conserve_nf = conserve_qns,
@@ -10,7 +10,7 @@
 Create the Hilbert space for a site of type "Electron".
 Optionally specify the conserved symmetries and their quantum number labels.
 """
-function space(::SiteType"Electron"; 
+function space(::SiteType"3/2fermion"; 
                conserve_qns = false,
                conserve_sz = conserve_qns,
                conserve_nf = conserve_qns,
