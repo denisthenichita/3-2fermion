@@ -11,7 +11,6 @@ Create the Hilbert space for a site of type "3/2fermion".
 Optionally specify the conserved symmetries and their quantum number labels.
 """
 
-#new comment
 function space(::SiteType"3/2fermion"; 
                conserve_qns = false,
                conserve_sz = conserve_qns,
