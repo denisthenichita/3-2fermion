@@ -1,10 +1,6 @@
-"""
-Create the Hilbert space for a site of type "3/2fermion".
+using ITensors
 
-Optionally specify the conserved symmetries and their quantum number labels.
-"""
-
-function space(::SiteType"3/2fermion"; 
+function ITensors.space(::SiteType"3/2fermion"; 
                conserve_qns = false,
                conserve_sz = conserve_qns,
                conserve_nf = conserve_qns,
@@ -53,7 +49,6 @@ function space(::SiteType"3/2fermion";
        QN((qnname_sz,+4),(qnname_nfparity,1,-2)) => 1
        QN((qnname_sz,-4),(qnname_nfparity,1,-2)) => 1      
        ]
-
   end
   return 16
 end
@@ -93,7 +88,7 @@ state(st::SiteType"3/2fermion",::StateName"↑↓⇓")  = state(st,StateName("Up
 state(st::SiteType"3/2fermion",::StateName"⇑↑↓⇓") = state(st,StateName("Up3Up1Dn1Dn3"))
 
 
-function op!(Op::ITensor,
+function ITensors.op(
              ::OpName"Nup3",
              ::SiteType"3/2fermion",
              s::Index)
@@ -107,7 +102,7 @@ function op!(Op::ITensor,
   Op[s'=>16,s=>16]  = 1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
              ::OpName"Nup1",
              ::SiteType"3/2fermion",
              s::Index)
@@ -121,7 +116,7 @@ function op!(Op::ITensor,
   Op[s'=>16,s=>16]  = 1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
              ::OpName"Ndn1",
              ::SiteType"3/2fermion",
              s::Index)
@@ -135,7 +130,7 @@ function op!(Op::ITensor,
   Op[s'=>16,s=>16]  = 1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
   ::OpName"Ndn3",
   ::SiteType"3/2fermion",
   s::Index)
@@ -151,7 +146,7 @@ end
 
 
 
-function op!(Op::ITensor,
+function ITensors.op(
              ::OpName"Ntot",
              ::SiteType"3/2fermion",
              s::Index)
@@ -172,7 +167,7 @@ function op!(Op::ITensor,
   Op[s'=>16,s=>16] = 4.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
              ::OpName"Cdagup3",
              ::SiteType"3/2fermion",
              s::Index)
@@ -186,7 +181,7 @@ function op!(Op::ITensor,
   Op[s'=>16,s=>15]  = 1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
   ::OpName"Cup3",
   ::SiteType"3/2fermion",
   s::Index)
@@ -200,7 +195,7 @@ function op!(Op::ITensor,
   Op[s'=>15,s=>16]  = 1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
   ::OpName"Cdagup1",
   ::SiteType"3/2fermion",
   s::Index)
@@ -214,7 +209,7 @@ function op!(Op::ITensor,
   Op[s'=>16,s=>14]  = -1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
   ::OpName"Cup1",
   ::SiteType"3/2fermion",
   s::Index)
@@ -228,7 +223,7 @@ function op!(Op::ITensor,
   Op[s'=>14,s=>16]  = -1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
   ::OpName"Cdagdn1",
   ::SiteType"3/2fermion",
   s::Index)
@@ -242,7 +237,7 @@ function op!(Op::ITensor,
   Op[s'=>16,s=>13]  = 1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
   ::OpName"Cdn1",
   ::SiteType"3/2fermion",
   s::Index)
@@ -256,7 +251,7 @@ function op!(Op::ITensor,
   Op[s'=>13,s=>16]  = 1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
   ::OpName"Cdn3",
   ::SiteType"3/2fermion",
   s::Index)
@@ -270,7 +265,7 @@ function op!(Op::ITensor,
   Op[s'=>16,s=>12]  = -1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
   ::OpName"Cdagdn3",
   ::SiteType"3/2fermion",
   s::Index)
@@ -284,7 +279,7 @@ function op!(Op::ITensor,
   Op[s'=>12,s=>16]  = -1.0
 end
 
-function op!(Op::ITensor,
+function ITensors.op(
   ::OpName"Cdn3",
   ::SiteType"3/2fermion",
   s::Index)
@@ -299,7 +294,7 @@ function op!(Op::ITensor,
 end
 
 
-function op!(Op::ITensor,
+function ITensors.op(
              ::OpName"Sz",
              ::SiteType"3/2fermion",
              s::Index)
@@ -320,17 +315,13 @@ function op!(Op::ITensor,
   Op[s'=>16,s=>16] =   0.0
 end
 
-op!(Op::ITensor,
-    ::OpName"Sᶻ",
-    st::SiteType"3/2fermion",
-    s::Index) = op!(Op,OpName("Sz"),st,s)
 
 
-has_fermion_string(::OpName"Cup3", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cdagup3", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cup1", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cdagup1", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cdn1", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cdagdn1", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cdn3", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cdagdn3", ::SiteType"3/2fermion") = true
+ITensors.has_fermion_string(::OpName"Cup3", ::SiteType"3/2fermion") = true
+ITensors.has_fermion_string(::OpName"Cdagup3", ::SiteType"3/2fermion") = true
+ITensors.has_fermion_string(::OpName"Cup1", ::SiteType"3/2fermion") = true
+ITensors.has_fermion_string(::OpName"Cdagup1", ::SiteType"3/2fermion") = true
+ITensors.has_fermion_string(::OpName"Cdn1", ::SiteType"3/2fermion") = true
+ITensors.has_fermion_string(::OpName"Cdagdn1", ::SiteType"3/2fermion") = true
+ITensors.has_fermion_string(::OpName"Cdn3", ::SiteType"3/2fermion") = true
+ITensors.has_fermion_string(::OpName"Cdagdn3", ::SiteType"3/2fermion") = true
