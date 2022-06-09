@@ -294,43 +294,25 @@ function op!(Op::ITensor,
 end
 
 
-
-function op!(Op::ITensor,
-             ::OpName"F",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>1,s=>1] = +1.0
-  Op[s'=>2,s=>2] = -1.0
-  Op[s'=>3,s=>3] = -1.0
-  Op[s'=>4,s=>4] = +1.0
-end
-
-function op!(Op::ITensor,
-             ::OpName"Fup",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>1,s=>1] = +1.0
-  Op[s'=>2,s=>2] = -1.0
-  Op[s'=>3,s=>3] = +1.0
-  Op[s'=>4,s=>4] = -1.0
-end
-
-function op!(Op::ITensor,
-             ::OpName"Fdn",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>1,s=>1] = +1.0
-  Op[s'=>2,s=>2] = +1.0
-  Op[s'=>3,s=>3] = -1.0
-  Op[s'=>4,s=>4] = -1.0
-end
-
 function op!(Op::ITensor,
              ::OpName"Sz",
              ::SiteType"3/2fermion",
              s::Index)
-  Op[s'=>2,s=>2] = +0.5
-  Op[s'=>3,s=>3] = -0.5
+  Op[s'=> 2,s=> 2] =  +1.5
+  Op[s'=> 3,s=> 3] =  +0.5
+  Op[s'=> 4,s=> 4] =  -0.5
+  Op[s'=> 5,s=> 5] =  -1.5
+  Op[s'=> 6,s=> 6] =  +2.0
+  Op[s'=> 7,s=> 7] =  +1.0
+  Op[s'=> 8,s=> 8] =   0.0
+  Op[s'=> 9,s=> 9] =   0.0
+  Op[s'=>10,s=>10] =  -1.0
+  Op[s'=>11,s=>11] =  -2.0
+  Op[s'=>12,s=>12] =  +1.5
+  Op[s'=>13,s=>13] =  +0.5
+  Op[s'=>14,s=>14] =  -0.5
+  Op[s'=>15,s=>15] =  -1.5
+  Op[s'=>16,s=>16] =   0.0
 end
 
 op!(Op::ITensor,
@@ -338,61 +320,13 @@ op!(Op::ITensor,
     st::SiteType"3/2fermion",
     s::Index) = op!(Op,OpName("Sz"),st,s)
 
-function op!(Op::ITensor,
-             ::OpName"Sx",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>2,s=>3] = 0.5
-  Op[s'=>3,s=>2] = 0.5
-end
-
-op!(Op::ITensor,
-    ::OpName"Sˣ",
-    st::SiteType"3/2fermion",
-    s::Index) = op!(Op,OpName("Sx"),st,s)
-
-function op!(Op::ITensor,
-             ::OpName"S+",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>2,s=>3] = 1.0
-end
-
-op!(Op::ITensor,
-    ::OpName"S⁺",
-    st::SiteType"3/2fermion",
-    s::Index) = op!(Op,OpName("S+"),st,s)
-op!(Op::ITensor,
-    ::OpName"Sp",
-    st::SiteType"3/2fermion",
-    s::Index) = op!(Op,OpName("S+"),st,s)
-op!(Op::ITensor,
-    ::OpName"Splus",
-    st::SiteType"3/2fermion",
-    s::Index) = op!(Op,OpName("S+"),st,s)
-
-function op!(Op::ITensor,
-             ::OpName"S-",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>3,s=>2] = 1.0
-end
-
-op!(Op::ITensor,
-    ::OpName"S⁻",
-    st::SiteType"3/2fermion",
-    s::Index) = op!(Op,OpName("S-"),st,s)
-op!(Op::ITensor,
-    ::OpName"Sm",
-    st::SiteType"3/2fermion",
-    s::Index) = op!(Op,OpName("S-"),st,s)
-op!(Op::ITensor,
-    ::OpName"Sminus",
-    st::SiteType"3/2fermion",
-    s::Index) = op!(Op,OpName("S-"),st,s)
 
 
-has_fermion_string(::OpName"Cup", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cdagup", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cdn", ::SiteType"3/2fermion") = true
-has_fermion_string(::OpName"Cdagdn", ::SiteType"3/2fermion") = true
+has_fermion_string(::OpName"Cup3", ::SiteType"3/2fermion") = true
+has_fermion_string(::OpName"Cdagup3", ::SiteType"3/2fermion") = true
+has_fermion_string(::OpName"Cup1", ::SiteType"3/2fermion") = true
+has_fermion_string(::OpName"Cdagup1", ::SiteType"3/2fermion") = true
+has_fermion_string(::OpName"Cdn1", ::SiteType"3/2fermion") = true
+has_fermion_string(::OpName"Cdagdn1", ::SiteType"3/2fermion") = true
+has_fermion_string(::OpName"Cdn3", ::SiteType"3/2fermion") = true
+has_fermion_string(::OpName"Cdagdn3", ::SiteType"3/2fermion") = true
