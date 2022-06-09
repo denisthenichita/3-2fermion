@@ -168,35 +168,45 @@ function op!(Op::ITensor,
 end
 
 function op!(Op::ITensor,
-             ::OpName"Cup",
+             ::OpName"Cdagup3",
              ::SiteType"3/2fermion",
              s::Index)
-  Op[s'=>1,s=>2] = 1.0
-  Op[s'=>3,s=>4] = 1.0
+  Op[s'=> 2,s=> 1]  = 1.0
+  Op[s'=> 6,s=> 3]  = 1.0
+  Op[s'=> 7,s=> 4]  = 1.0
+  Op[s'=> 8,s=> 5]  = 1.0
+  Op[s'=>12,s=> 9]  = 1.0
+  Op[s'=>13,s=>10]  = 1.0
+  Op[s'=>14,s=>11]  = 1.0
+  Op[s'=>16,s=>15]  = 1.0
 end
-
-function op!(Op::ITensor,
-             ::OpName"Cdagup",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>2,s=>1] = 1.0
-  Op[s'=>4,s=>3] = 1.0
-end
-
-
 
 function op!(Op::ITensor,
   ::OpName"Cup3",
   ::SiteType"3/2fermion",
   s::Index)
-  Op[s'=>1,s=>3]    = 1.0
-  Op[s'=>2,s=>6]    = -1.0
-  Op[s'=>4,s=>9]    = 1.0
-  Op[s'=>5,s=>10]   = 1.0
-  Op[s'=>7,s=>12]   = -1.0
-  Op[s'=>8,s=>13]   = -1.0
-  Op[s'=>11,s=>15]  = 1.0
-  Op[s'=>14,s=>16]  = -1.0
+  Op[s'=> 1,s=> 2]  = 1.0
+  Op[s'=> 3,s=> 6]  = 1.0
+  Op[s'=> 4,s=> 7]  = 1.0
+  Op[s'=> 5,s=> 8]  = 1.0
+  Op[s'=> 9,s=>12]  = 1.0
+  Op[s'=>10,s=>13]  = 1.0
+  Op[s'=>11,s=>14]  = 1.0
+  Op[s'=>15,s=>16]  = 1.0
+end
+
+function op!(Op::ITensor,
+  ::OpName"Cdagup1",
+  ::SiteType"3/2fermion",
+  s::Index)
+  Op[s'=> 3,s=> 1]  = 1.0
+  Op[s'=> 6,s=> 2]  = -1.0
+  Op[s'=> 9,s=> 4]  = 1.0
+  Op[s'=>10,s=> 5]  = 1.0
+  Op[s'=>12,s=> 7]  = -1.0
+  Op[s'=>13,s=> 8]  = -1.0
+  Op[s'=>15,s=>11]  = 1.0
+  Op[s'=>16,s=>14]  = -1.0
 end
 
 function op!(Op::ITensor,
@@ -211,6 +221,20 @@ function op!(Op::ITensor,
   Op[s'=>8,s=>13]   = -1.0
   Op[s'=>11,s=>15]  = 1.0
   Op[s'=>14,s=>16]  = -1.0
+end
+
+function op!(Op::ITensor,
+  ::OpName"Cdagdn1",
+  ::SiteType"3/2fermion",
+  s::Index)
+  Op[s'=> 4,s=> 1]  = 1.0
+  Op[s'=> 7,s=> 2]  = -1.0
+  Op[s'=> 9,s=> 3]  = -1.0
+  Op[s'=>11,s=> 5]  = 1.0
+  Op[s'=>12,s=> 6]  = 1.0
+  Op[s'=>14,s=> 8]  = -1.0
+  Op[s'=>15,s=>10]  = -1.0
+  Op[s'=>16,s=>13]  = 1.0
 end
 
 function op!(Op::ITensor,
@@ -231,6 +255,20 @@ function op!(Op::ITensor,
   ::OpName"Cdn3",
   ::SiteType"3/2fermion",
   s::Index)
+  Op[s'=> 5,s=> 1]  = 1.0
+  Op[s'=> 8,s=> 2]  = -1.0
+  Op[s'=>10,s=> 3]  = -1.0
+  Op[s'=>11,s=> 4]  = -1.0
+  Op[s'=>13,s=> 6]  = 1.0
+  Op[s'=>14,s=> 7]  = 1.0
+  Op[s'=>15,s=> 9]  = 1.0
+  Op[s'=>16,s=>12]  = -1.0
+end
+
+function op!(Op::ITensor,
+  ::OpName"Cdagdn3",
+  ::SiteType"3/2fermion",
+  s::Index)
   Op[s'=>1,s=>5]    = 1.0
   Op[s'=>2,s=>8]    = -1.0
   Op[s'=>3,s=>10]   = -1.0
@@ -255,53 +293,7 @@ function op!(Op::ITensor,
   Op[s'=>12,s=>16]  = -1.0
 end
 
-function op!(Op::ITensor,
-             ::OpName"Cdn",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>1,s=>3] = 1.0
-  Op[s'=>2,s=>4] = -1.0
-end
 
-function op!(Op::ITensor,
-             ::OpName"Cdagdn",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>3,s=>1] = 1.0
-  Op[s'=>4,s=>2] = -1.0
-end
-
-function op!(Op::ITensor,
-             ::OpName"Aup",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>1,s=>2] = 1.0
-  Op[s'=>3,s=>4] = 1.0
-end
-
-function op!(Op::ITensor,
-             ::OpName"Adagup",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>2,s=>1] = 1.0
-  Op[s'=>4,s=>3] = 1.0
-end
-
-function op!(Op::ITensor,
-             ::OpName"Adn",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>1,s=>3] = 1.0
-  Op[s'=>2,s=>4] = 1.0
-end
-
-function op!(Op::ITensor,
-             ::OpName"Adagdn",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=>3,s=>1] = 1.0
-  Op[s'=>2,s=>4] = 1.0
-end
 
 function op!(Op::ITensor,
              ::OpName"F",
