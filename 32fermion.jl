@@ -183,6 +183,78 @@ function op!(Op::ITensor,
   Op[s'=>4,s=>3] = 1.0
 end
 
+
+
+function op!(Op::ITensor,
+  ::OpName"Cup3",
+  ::SiteType"3/2fermion",
+  s::Index)
+  Op[s'=>1,s=>3]    = 1.0
+  Op[s'=>2,s=>6]    = -1.0
+  Op[s'=>4,s=>9]    = 1.0
+  Op[s'=>5,s=>10]   = 1.0
+  Op[s'=>7,s=>12]   = -1.0
+  Op[s'=>8,s=>13]   = -1.0
+  Op[s'=>11,s=>15]  = 1.0
+  Op[s'=>14,s=>16]  = -1.0
+end
+
+function op!(Op::ITensor,
+  ::OpName"Cup1",
+  ::SiteType"3/2fermion",
+  s::Index)
+  Op[s'=>1,s=>3]    = 1.0
+  Op[s'=>2,s=>6]    = -1.0
+  Op[s'=>4,s=>9]    = 1.0
+  Op[s'=>5,s=>10]   = 1.0
+  Op[s'=>7,s=>12]   = -1.0
+  Op[s'=>8,s=>13]   = -1.0
+  Op[s'=>11,s=>15]  = 1.0
+  Op[s'=>14,s=>16]  = -1.0
+end
+
+function op!(Op::ITensor,
+  ::OpName"Cdn1",
+  ::SiteType"3/2fermion",
+  s::Index)
+  Op[s'=>1,s=>4]    = 1.0
+  Op[s'=>2,s=>7]    = -1.0
+  Op[s'=>3,s=>9]    = -1.0
+  Op[s'=>5,s=>11]   = 1.0
+  Op[s'=>6,s=>12]   = 1.0
+  Op[s'=>8,s=>14]   = -1.0
+  Op[s'=>10,s=>15]  = -1.0
+  Op[s'=>13,s=>16]  = 1.0
+end
+
+function op!(Op::ITensor,
+  ::OpName"Cdn3",
+  ::SiteType"3/2fermion",
+  s::Index)
+  Op[s'=>1,s=>5]    = 1.0
+  Op[s'=>2,s=>8]    = -1.0
+  Op[s'=>3,s=>10]   = -1.0
+  Op[s'=>4,s=>11]   = -1.0
+  Op[s'=>6,s=>13]   = 1.0
+  Op[s'=>7,s=>14]   = 1.0
+  Op[s'=>9,s=>15]   = 1.0
+  Op[s'=>12,s=>16]  = -1.0
+end
+
+function op!(Op::ITensor,
+  ::OpName"Cdn3",
+  ::SiteType"3/2fermion",
+  s::Index)
+  Op[s'=>1,s=>5]    = 1.0
+  Op[s'=>2,s=>8]    = -1.0
+  Op[s'=>3,s=>10]   = -1.0
+  Op[s'=>4,s=>11]   = -1.0
+  Op[s'=>6,s=>13]   = 1.0
+  Op[s'=>7,s=>14]   = 1.0
+  Op[s'=>9,s=>15]   = 1.0
+  Op[s'=>12,s=>16]  = -1.0
+end
+
 function op!(Op::ITensor,
              ::OpName"Cdn",
              ::SiteType"3/2fermion",
