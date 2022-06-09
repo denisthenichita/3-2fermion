@@ -8,16 +8,9 @@ function space(::SiteType"3/2fermion";
                conserve_qns = false,
                conserve_sz = conserve_qns,
                conserve_nf = conserve_qns,
-               conserve_nfparity = conserve_qns,
                qnname_sz = "Sz",
                qnname_nf = "Nf",
-               qnname_nfparity = "NfParity",
-               # Deprecated
-               conserve_parity=nothing,
               )
-  if !isnothing(conserve_parity)
-    conserve_nfparity = conserve_parity
-  end
   if conserve_sz && conserve_nf
     return [
        QN((qnname_nf,0,-1),(qnname_sz, 0)) => 1
@@ -50,17 +43,17 @@ function space(::SiteType"3/2fermion";
       ]
   elseif conserve_sz
     return [
-       QN((qnname_sz, 0),(qnname_nfparity,0,-2)) => 1
-       QN((qnname_sz,+1),(qnname_nfparity,1,-2)) => 1
-       QN((qnname_sz,-1),(qnname_nfparity,1,-2)) => 1
-       QN((qnname_sz, 0),(qnname_nfparity,0,-2)) => 1
-      ]
-  elseif conserve_nfparity
-    return [
-       QN(qnname_nfparity,0,-2) => 1
-       QN(qnname_nfparity,1,-2) => 2
-       QN(qnname_nfparity,0,-2) => 1
-      ]
+       QN((qnname_sz, 0),(qnname_nfparity,0,-2)) => 4
+       QN((qnname_sz,+1),(qnname_nfparity,1,-2)) => 2
+       QN((qnname_sz,-1),(qnname_nfparity,1,-2)) => 2
+       QN((qnname_sz,+2),(qnname_nfparity,1,-2)) => 1
+       QN((qnname_sz,-2),(qnname_nfparity,1,-2)) => 1
+       QN((qnname_sz,+3),(qnname_nfparity,1,-2)) => 2
+       QN((qnname_sz,-3),(qnname_nfparity,1,-2)) => 2
+       QN((qnname_sz,+4),(qnname_nfparity,1,-2)) => 1
+       QN((qnname_sz,-4),(qnname_nfparity,1,-2)) => 1      
+       ]
+
   end
   return 16
 end
@@ -331,7 +324,6 @@ op!(Op::ITensor,
     ::OpName"Sᶻ",
     st::SiteType"3/2fermion",
     s::Index) = op!(Op,OpName("Sz"),st,s)
-
 
 
 has_fermion_string(::OpName"Cup3", ::SiteType"3/2fermion") = true
