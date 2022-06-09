@@ -1,13 +1,6 @@
 """
-    space(::SiteType"3/2fermion"; 
-          conserve_qns = false, trying things out
-          conserve_sz = conserve_qns,
-          conserve_nf = conserve_qns,
-          conserve_nfparity = conserve_qns,
-          qnname_sz = "Sz",
-          qnname_nf = "Nf",
-          qnname_nfparity = "NfParity")
 Create the Hilbert space for a site of type "3/2fermion".
+
 Optionally specify the conserved symmetries and their quantum number labels.
 """
 
@@ -19,6 +12,8 @@ function space(::SiteType"3/2fermion";
                qnname_sz = "Sz",
                qnname_nf = "Nf",
                qnname_nfparity = "NfParity",
+               # Deprecated
+               conserve_parity=nothing,
               )
   if !isnothing(conserve_parity)
     conserve_nfparity = conserve_parity
@@ -26,15 +21,32 @@ function space(::SiteType"3/2fermion";
   if conserve_sz && conserve_nf
     return [
        QN((qnname_nf,0,-1),(qnname_sz, 0)) => 1
+
+       QN((qnname_nf,1,-1),(qnname_sz,+3)) => 1
        QN((qnname_nf,1,-1),(qnname_sz,+1)) => 1
        QN((qnname_nf,1,-1),(qnname_sz,-1)) => 1
-       QN((qnname_nf,2,-1),(qnname_sz, 0)) => 1
+       QN((qnname_nf,1,-1),(qnname_sz,-3)) => 1
+
+       QN((qnname_nf,2,-1),(qnname_sz,+4)) => 1
+       QN((qnname_nf,2,-1),(qnname_sz,+2)) => 1
+       QN((qnname_nf,2,-1),(qnname_sz, 0)) => 2
+       QN((qnname_nf,2,-1),(qnname_sz,-2)) => 1
+       QN((qnname_nf,2,-1),(qnname_sz,-4)) => 1
+
+       QN((qnname_nf,3,-1),(qnname_sz,+3)) => 1
+       QN((qnname_nf,3,-1),(qnname_sz,+1)) => 1
+       QN((qnname_nf,3,-1),(qnname_sz,-1)) => 1
+       QN((qnname_nf,3,-1),(qnname_sz,-3)) => 1
+
+       QN((qnname_nf,4,-1),(qnname_sz, 0)) => 1
       ]
   elseif conserve_nf
     return [
        QN(qnname_nf,0,-1) => 1
-       QN(qnname_nf,1,-1) => 2
-       QN(qnname_nf,2,-1) => 1
+       QN(qnname_nf,1,-1) => 4
+       QN(qnname_nf,2,-1) => 6
+       QN(qnname_nf,3,-1) => 4
+       QN(qnname_nf,4,-1) => 1
       ]
   elseif conserve_sz
     return [
@@ -50,7 +62,7 @@ function space(::SiteType"3/2fermion";
        QN(qnname_nfparity,0,-2) => 1
       ]
   end
-  return 4
+  return 16
 end
 
 state(::SiteType"3/2fermion",::StateName"Emp")          = 1
