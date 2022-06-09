@@ -1,6 +1,7 @@
 using ITensors
 
-function ITensors.space(::SiteType"3/2fermion"; 
+function ITensors.space(
+               ::SiteType"3/2fermion"; 
                conserve_qns = false,
                conserve_sz = conserve_qns,
                conserve_nf = conserve_qns,
@@ -39,54 +40,53 @@ function ITensors.space(::SiteType"3/2fermion";
       ]
   elseif conserve_sz
     return [
-       QN((qnname_sz, 0),(qnname_nfparity,0,-2)) => 4
-       QN((qnname_sz,+1),(qnname_nfparity,1,-2)) => 2
-       QN((qnname_sz,-1),(qnname_nfparity,1,-2)) => 2
-       QN((qnname_sz,+2),(qnname_nfparity,1,-2)) => 1
-       QN((qnname_sz,-2),(qnname_nfparity,1,-2)) => 1
-       QN((qnname_sz,+3),(qnname_nfparity,1,-2)) => 2
-       QN((qnname_sz,-3),(qnname_nfparity,1,-2)) => 2
-       QN((qnname_sz,+4),(qnname_nfparity,1,-2)) => 1
-       QN((qnname_sz,-4),(qnname_nfparity,1,-2)) => 1      
+       QN((qnname_sz, 0)) => 4
+       QN((qnname_sz,+1)) => 2
+       QN((qnname_sz,-1)) => 2
+       QN((qnname_sz,+2)) => 1
+       QN((qnname_sz,-2)) => 1
+       QN((qnname_sz,+3)) => 2
+       QN((qnname_sz,-3)) => 2
+       QN((qnname_sz,+4)) => 1
+       QN((qnname_sz,-4)) => 1      
        ]
   end
   return 16
 end
 
-state(::SiteType"3/2fermion",::StateName"Emp")          = 1
-state(::SiteType"3/2fermion",::StateName"Up3")          = 2
-state(::SiteType"3/2fermion",::StateName"Up1")          = 3
-state(::SiteType"3/2fermion",::StateName"Dn1")          = 4
-state(::SiteType"3/2fermion",::StateName"Dn3")          = 5
-state(::SiteType"3/2fermion",::StateName"Up3Up1")       = 6
-state(::SiteType"3/2fermion",::StateName"Up3Dn1")       = 7
-state(::SiteType"3/2fermion",::StateName"Up3Dn3")       = 8
-state(::SiteType"3/2fermion",::StateName"Up1Dn1")       = 9
-state(::SiteType"3/2fermion",::StateName"Up1Dn3")       = 10
-state(::SiteType"3/2fermion",::StateName"Dn1Dn3")       = 11
-state(::SiteType"3/2fermion",::StateName"Up3Up1Dn1")    = 12
-state(::SiteType"3/2fermion",::StateName"Up3Up1Dn3")    = 13
-state(::SiteType"3/2fermion",::StateName"Up3Dn1Dn3")    = 14
-state(::SiteType"3/2fermion",::StateName"Up1Dn1Dn3")    = 15
-state(::SiteType"3/2fermion",::StateName"Up3Up1Dn1Dn3") = 16
+ITensors.val(::ValName"Emp"         ,::SiteType"3/2fermion") = 1
+ITensors.val(::ValName"Up3"         ,::SiteType"3/2fermion") =2
+ITensors.val(::ValName"Up1"         ,::SiteType"3/2fermion") = 3
+ITensors.val(::ValName"Dn1"         ,::SiteType"3/2fermion") = 4
+ITensors.val(::ValName"Dn3"         ,::SiteType"3/2fermion") = 5
+ITensors.val(::ValName"Up3Up1"      ,::SiteType"3/2fermion") = 6
+ITensors.val(::ValName"Up3Dn1"      ,::SiteType"3/2fermion") = 7
+ITensors.val(::ValName"Up3Dn3"      ,::SiteType"3/2fermion") = 8
+ITensors.val(::ValName"Up1Dn1"      ,::SiteType"3/2fermion") = 9
+ITensors.val(::ValName"Up1Dn3"      ,::SiteType"3/2fermion") = 10
+ITensors.val(::ValName"Dn1Dn3"      ,::SiteType"3/2fermion") = 11
+ITensors.val(::ValName"Up3Up1Dn1"   ,::SiteType"3/2fermion") = 12
+ITensors.val(::ValName"Up3Up1Dn3"   ,::SiteType"3/2fermion") = 13
+ITensors.val(::ValName"Up3Dn1Dn3"   ,::SiteType"3/2fermion") = 14
+ITensors.val(::ValName"Up1Dn1Dn3"   ,::SiteType"3/2fermion") = 15
+ITensors.val(::ValName"Up3Up1Dn1Dn3",::SiteType"3/2fermion") = 16
 
-state(st::SiteType"3/2fermion",::StateName"0")    = state(st,StateName("Emp"))
-state(st::SiteType"3/2fermion",::StateName"⇑")    = state(st,StateName("Up3"))
-state(st::SiteType"3/2fermion",::StateName"↑")    = state(st,StateName("Up1"))
-state(st::SiteType"3/2fermion",::StateName"↓")    = state(st,StateName("Dn1"))
-state(st::SiteType"3/2fermion",::StateName"⇓")    = state(st,StateName("Dn3"))
-state(st::SiteType"3/2fermion",::StateName"⇑↑")   = state(st,StateName("Up3Up1"))
-state(st::SiteType"3/2fermion",::StateName"⇑↓")   = state(st,StateName("Up3Dn1"))
-state(st::SiteType"3/2fermion",::StateName"⇑⇓")   = state(st,StateName("Up3Dn3"))
-state(st::SiteType"3/2fermion",::StateName"↑↓")   = state(st,StateName("Up1Dn1"))
-state(st::SiteType"3/2fermion",::StateName"↑⇓")   = state(st,StateName("Up1Dn3"))
-state(st::SiteType"3/2fermion",::StateName"↓⇓")   = state(st,StateName("Dn1Dn3"))
-state(st::SiteType"3/2fermion",::StateName"⇑↑↓")  = state(st,StateName("Up3Up1Dn1"))
-state(st::SiteType"3/2fermion",::StateName"⇑↑⇓")  = state(st,StateName("Up3Up1Dn3"))
-state(st::SiteType"3/2fermion",::StateName"⇑↓⇓")  = state(st,StateName("Up3Dn1Dn3"))
-state(st::SiteType"3/2fermion",::StateName"↑↓⇓")  = state(st,StateName("Up1Dn1Dn3"))
-state(st::SiteType"3/2fermion",::StateName"⇑↑↓⇓") = state(st,StateName("Up3Up1Dn1Dn3"))
-
+ITensors.state(::StateName"Emp"         ,::SiteType"3/2fermion" ) = [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ITensors.state(::StateName"Up3"         ,::SiteType"3/2fermion" ) = [0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ITensors.state(::StateName"Up1"         ,::SiteType"3/2fermion" ) = [0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ITensors.state(::StateName"Dn1"         ,::SiteType"3/2fermion" ) = [0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0]
+ITensors.state(::StateName"Dn3"         ,::SiteType"3/2fermion" ) = [0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0]
+ITensors.state(::StateName"Up3Up1"      ,::SiteType"3/2fermion" ) = [0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0]
+ITensors.state(::StateName"Up3Dn1"      ,::SiteType"3/2fermion" ) = [0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0]
+ITensors.state(::StateName"Up3Dn3"      ,::SiteType"3/2fermion" ) = [0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0]
+ITensors.state(::StateName"Up1Dn1"      ,::SiteType"3/2fermion" ) = [0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0]
+ITensors.state(::StateName"Up1Dn3"      ,::SiteType"3/2fermion" ) = [0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0]
+ITensors.state(::StateName"Dn1Dn3"      ,::SiteType"3/2fermion" ) = [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0]
+ITensors.state(::StateName"Up3Up1Dn1"   ,::SiteType"3/2fermion" ) = [0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0]
+ITensors.state(::StateName"Up3Up1Dn3"   ,::SiteType"3/2fermion" ) = [0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0]
+ITensors.state(::StateName"Up3Dn1Dn3"   ,::SiteType"3/2fermion" ) = [0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0]
+ITensors.state(::StateName"Up1Dn1Dn3"   ,::SiteType"3/2fermion" ) = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0]
+ITensors.state(::StateName"Up3Up1Dn1Dn3",::SiteType"3/2fermion" ) = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1]
 
 function ITensors.op(
              ::OpName"Nup3",
@@ -148,23 +148,25 @@ end
 
 function ITensors.op(
              ::OpName"Ntot",
-             ::SiteType"3/2fermion",
-             s::Index)
-  Op[s'=> 2,s=> 2] = 1.0
-  Op[s'=> 3,s=> 3] = 1.0
-  Op[s'=> 4,s=> 4] = 1.0
-  Op[s'=> 5,s=> 5] = 1.0
-  Op[s'=> 6,s=> 6] = 2.0
-  Op[s'=> 7,s=> 7] = 2.0
-  Op[s'=> 8,s=> 8] = 2.0
-  Op[s'=> 9,s=> 9] = 2.0
-  Op[s'=>10,s=>10] = 2.0
-  Op[s'=>11,s=>11] = 2.0
-  Op[s'=>12,s=>12] = 3.0
-  Op[s'=>13,s=>13] = 3.0
-  Op[s'=>14,s=>14] = 3.0
-  Op[s'=>15,s=>15] = 3.0
-  Op[s'=>16,s=>16] = 4.0
+             ::SiteType"3/2fermion")
+             return [
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 2.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 2.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 2.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 2.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 2.0 0.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 2.0 0.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 3.0 0.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 3.0 0.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 3.0 0.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 3.0 0.0
+              0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 4.0
+             ]
 end
 
 function ITensors.op(
