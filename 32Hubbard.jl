@@ -6,14 +6,25 @@ using ITensors
 #
 
 let
-  N = 24
-  Npart = 12
+  N = 16
+  Npart = 24
   t = 1.0
   U = 1.0
 
   sites = siteinds("3/2fermion", N; conserve_qns=true)
 
   ampo = OpSum()
+
+  for b in 1:(N - 1)
+    ampo += -t, "Cdagup3", b, "Cup3", b + 1
+    ampo += -t, "Cdagup3", b + 1, "Cup3", b
+    ampo += -t, "Cdagup1", b, "Cup1", b + 1
+    ampo += -t, "Cdagup1", b + 1, "Cup1", b
+    ampo += -t, "Cdagdn1", b, "Cdn1", b + 1
+    ampo += -t, "Cdagdn1", b + 1, "Cdn1", b
+    ampo += -t, "Cdagdn3", b, "Cdn3", b + 1
+    ampo += -t, "Cdagdn3", b + 1, "Cdn3", b
+  end
 
   for b in 1:N
     ampo .+= (U/2), "Ntot", b, "Ntot", b 
