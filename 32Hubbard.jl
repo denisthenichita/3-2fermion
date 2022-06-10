@@ -1,11 +1,16 @@
 using ITensors
-
+using LinearAlgebra
 #
 # DMRG calculation of the extended Hubbard model
 # ground state wavefunction, and spin densities
 #
 
 let
+
+  ITensors.Strided.set_num_threads(1)
+  BLAS.set_num_threads(1)
+  ITensors.enable_threaded_blocksparse()
+
   N = 16
   Npart = 24
   t = 1.0
@@ -29,7 +34,8 @@ let
   for b in 1:N
     ampo .+= (U/2), "Ntot", b, "Ntot", b 
   end
-  ham = MPO(ampo, sites)
+  H = MPO(ampo, sites)
+  H = splitblocks(linkinds, H)
 
   sweeps = Sweeps(6)
   setmaxdim!(sweeps, 50, 100, 200, 400, 800, 800)
@@ -52,7 +58,7 @@ let
 
 
   # Start DMRG calculation:
-  energy, psi = dmrg(ham, psi0, sweeps)
+  energy, psi = dmrg(H, psi0, sweeps)
 
   upd = fill(0.0, N)
   dnd = fill(0.0, N)
