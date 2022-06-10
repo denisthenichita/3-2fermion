@@ -37,9 +37,9 @@ let
   H = MPO(ampo, sites)
   H = splitblocks(linkinds, H)
 
-  sweeps = Sweeps(6)
-  setmaxdim!(sweeps, 50, 100, 200, 400, 800, 800)
-  setcutoff!(sweeps, 1E-12)
+  sweeps = Sweeps(8)
+  setmaxdim!(sweeps, 2000)
+  setcutoff!(sweeps, 1E-10)
 
 
   state = ["Emp" for n in 1:N]
@@ -59,10 +59,6 @@ let
 
   # Start DMRG calculation:
   energy, psi = dmrg(H, psi0, sweeps)
-
-  upd = fill(0.0, N)
-  dnd = fill(0.0, N)
-  
 
   println("\nGround State Energy = $energy")
 end
