@@ -5,11 +5,11 @@ using ITensors
 #
 
 let
-  N_phys=16
+  N_phys=72
   N = 2*N_phys
-  Npart = 32
+  Npart = 2*N_phys
   t = 1.0
-  U = 2.0
+  U = -2.0
 
   sites = siteinds(n->isodd(n) ? "Electron" : "Electron3",N; conserve_qns=true)
 
@@ -48,7 +48,7 @@ let
   # Initialize wavefunction to be bond 
   # dimension 10 random MPS with number
   # of particles the same as `state`
-  psi0 = randomMPS(sites, state, 10)
+  psi0 = randomMPS(sites, state)
   
   # Check total number of particles:
   @show flux(psi0)
@@ -58,6 +58,19 @@ let
   energy, psi = dmrg(H, psi0, sweeps)
 
   println("\nGround State Energy = $energy")
+
+  ampo = OpSum()
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    ampo += "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1  
+  end
+
+  Q=MPO(ampo,sites)
+
+  avgQ = inner(psi',Q,psi)/N_phys
+  println("\n<Q> = $avgQ")
+
 end
 
 
