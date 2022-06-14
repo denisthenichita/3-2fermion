@@ -5,6 +5,35 @@ include("electron3.jl")
 # DMRG calculation of the extended Hubbard model
 # ground state wavefunction, and spin densities
 #
+mutable struct DemoObserver <: AbstractObserver
+  energy_tol::Float64
+  last_energy::Float64
+
+  DemoObserver(energy_tol=0.0) = new(energy_tol,1000.0)
+end
+
+function ITensors.checkdone!(o::DemoObserver;kwargs...)
+ sw = kwargs[:sweep]
+ energy = kwargs[:energy]
+ if abs(energy-o.last_energy)/abs(energy) < o.energy_tol
+   println("Stopping DMRG after sweep $sw")
+   return true
+ end
+ # Otherwise, update last_energy and keep going
+ o.last_energy = energy
+ return false
+end
+
+function ITensors.measure!(o::DemoObserver; kwargs...)
+ energy = kwargs[:energy]
+ sweep = kwargs[:sweep]
+ bond = kwargs[:bond]
+ outputlevel = kwargs[:outputlevel]
+
+ if outputlevel > 0
+   #println("Sweep $sweep at bond $bond, the energy is $energy")
+ end
+end
 
 let
   ITensors.Strided.set_num_threads(1)
@@ -62,8 +91,11 @@ let
   @show flux(psi0)
 
 
+  etol = 1E-3
+  obs = DemoObserver(etol)
+
   # Start DMRG calculation:
-  energy, psi = dmrg(H, psi0, sweeps)
+  energy, psi = dmrg(H, psi0, sweeps;obs)
 
   println("\nGround State Energy = $energy")
 
