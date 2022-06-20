@@ -40,7 +40,7 @@ let
   BLAS.set_num_threads(1)
   ITensors.enable_threaded_blocksparse()
 
-  N_phys=12
+  N_phys=72
   N = 2*N_phys
   Npart = 2*N_phys
   t = 1
@@ -132,16 +132,16 @@ let
 
   for b_phys in 1:N_phys
     b=2*b_phys-1
-    ampo +=  "Nup", b  
-    ampo +=  "Nup", b+1
-    ampo +=  "Ndn", b  
-    ampo +=  "Ndn", b+1    
+    ampo +=  1/2,"Nup", b  
+    ampo +=  3/2,"Nup", b+1
+    ampo +=  -1/2,"Ndn", b  
+    ampo +=  -3/2,"Ndn", b+1    
   end
 
   pL=MPO(ampo,sites)
 
   avgpL = inner(psi',pL,psi)/N_phys
-  println("\n p = $avgpL")
+  println("\n pL = $avgpL")
 
 
 end
