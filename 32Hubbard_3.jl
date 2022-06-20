@@ -127,21 +127,21 @@ let
   avgT = inner(psi',T,psi)/N_phys
   println("\n<T3/2> = $avgT")
 
-  ################## p = 1/L sum alpha*<n>
+  ################## p*L = sum alpha*<n>
   ampo = OpSum()
 
   for b_phys in 1:N_phys
     b=2*b_phys-1
-    ampo += -1/2/N, "Nup", b  
-    ampo += -3/2/N, "Nup", b+1
-    ampo += 1/2/N, "Ndn", b  
-    ampo += 3/2/N, "Ndn", b+1    
+    ampo += -1/2, "Nup", b  
+    ampo += -3/2, "Nup", b+1
+    ampo += 1/2, "Ndn", b  
+    ampo += 3/2, "Ndn", b+1    
   end
 
-  p=MPO(ampo,sites)
+  pL=MPO(ampo,sites)
 
-  avgq = inner(psi',p,psi)/N_phys
-  println("\np = $avgp")
+  avgpL = inner(psi',pL,psi)/N_phys
+  println("\n p = $avgpL")
 
 
 end
