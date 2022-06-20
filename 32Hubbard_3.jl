@@ -44,7 +44,7 @@ let
   N = 2*N_phys
   Npart = 2*N_phys
   t = 1
-  U = -1
+  U = -2
 
   sites = siteinds(n->isodd(n) ? "Electron" : "Electron3",N; conserve_qns=true)
 
@@ -132,10 +132,10 @@ let
 
   for b_phys in 1:N_phys
     b=2*b_phys-1
-    ampo += -1/2, "Nup", b  
-    ampo += -3/2, "Nup", b+1
-    ampo += 1/2, "Ndn", b  
-    ampo += 3/2, "Ndn", b+1    
+    ampo +=  "Nup", b  
+    ampo +=  "Nup", b+1
+    ampo +=  "Ndn", b  
+    ampo +=  "Ndn", b+1    
   end
 
   pL=MPO(ampo,sites)
