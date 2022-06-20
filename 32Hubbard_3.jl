@@ -111,4 +111,17 @@ let
   avgQ = inner(psi',Q,psi)/N_phys
   println("\n<Q> = $avgQ")
 
+  ampo = OpSum()
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    ampo += "Ndn", b, "Nup", b+1, "Ndn", b+1
+    ampo -= "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1    
+  end
+
+  Q=MPO(ampo,sites)
+
+  avgQ = inner(psi',Q,psi)/N_phys
+  println("\n<T3/2> = $avgQ")
+
 end
