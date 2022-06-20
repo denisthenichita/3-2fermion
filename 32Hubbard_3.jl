@@ -40,9 +40,9 @@ let
   BLAS.set_num_threads(1)
   ITensors.enable_threaded_blocksparse()
 
-  N_phys=72
-  N = 2*N_phys
-  Npart = 2*N_phys
+  N_phys=12
+  N = N_phys
+  Npart = N_phys
   t = 1
   U = -2
 
