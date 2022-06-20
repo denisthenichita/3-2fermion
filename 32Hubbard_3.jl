@@ -99,6 +99,7 @@ let
 
   println("\nGround State Energy = $energy")
 
+  ################## <Q>
   ampo = OpSum()
 
   for b_phys in 1:N_phys
@@ -111,6 +112,7 @@ let
   avgQ = inner(psi',Q,psi)/N_phys
   println("\n<Q> = $avgQ")
 
+  ################## <T3/2>
   ampo = OpSum()
 
   for b_phys in 1:N_phys
@@ -121,7 +123,7 @@ let
 
   Q=MPO(ampo,sites)
 
-  avgQ = inner(psi',Q,psi)/N_phys
-  println("\n<T3/2> = $avgQ")
+  avgT = inner(psi',Q,psi)/N_phys
+  println("\n<T3/2> = $avgT")
 
 end
