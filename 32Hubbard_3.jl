@@ -40,8 +40,8 @@ let
   BLAS.set_num_threads(1)
   ITensors.enable_threaded_blocksparse()
 
-  N_phys=12
-  N = N_phys
+  N_phys=72
+  N = 2*N_phys
   Npart = N_phys
   t = 1
   U = -2
@@ -79,7 +79,7 @@ let
 
   state = ["Emp" for n in 1:N]
   for i in 1:Int.(Npart/2)
-    state[i]="UpDn"
+    state[i]="Up"
   end
 
   # Initialize wavefunction to be bond 
@@ -127,6 +127,26 @@ let
   avgT = inner(psi',T,psi)/N_phys
   println("\n<T3/2> = $avgT")
 
+  ################## <A3/2>
+  ampo = OpSum()
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    ampo += "Nup", b+1
+    ampo -= "Nup", b+1, "Ndn", b+1
+    ampo -= "Ndn", b, "Nup", b+1
+    ampo -= "Nup", b, "Nup", b+1
+    ampo += "Nup", b, "Nup", b+1, "Ndn", b+1
+    ampo += "Nup", b, "Ndn", b, "Nup", b+1 
+    ampo += "Ndn", b, "Nup", b+1, "Ndn", b+1  
+    ampo -= "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1    
+  end
+
+  A=MPO(ampo,sites)
+
+  avgA = inner(psi',A,psi)/N_phys
+  println("\n<A3/2> = $avgA")
+
   ################## p*L = sum alpha*<n>
   ampo = OpSum()
 
@@ -140,7 +160,7 @@ let
 
   pL=MPO(ampo,sites)
 
-  avgpL = inner(psi',pL,psi)/N_phys
+  avgpL = inner(psi',pL,psi)
   println("\n pL = $avgpL")
 
 
