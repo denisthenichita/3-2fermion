@@ -78,7 +78,7 @@ let
 
 
   state = ["Emp" for n in 1:N]
-  for i in 1:Npart
+  for i in 1:Int(N)
     if i%2==0
       state[i]="Up"
       @show i
