@@ -71,8 +71,8 @@ let
   H = MPO(ampo, sites)
   H = splitblocks(linkinds, H)
   
-  sweeps = Sweeps(8)
-  setmaxdim!(sweeps, 3000)
+  sweeps = Sweeps(100)
+  setmaxdim!(sweeps, 5000)
   setcutoff!(sweeps, 1E-10)
   setnoise!(sweeps,1E-6)
 
