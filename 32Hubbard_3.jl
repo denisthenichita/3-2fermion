@@ -78,8 +78,11 @@ let
 
 
   state = ["Emp" for n in 1:N]
-  for i in 1:Npart:2
-    state[i+1]="Up"
+  for i in 1:Npart
+    if i%2==0
+      state[i]="Up"
+      @show i
+    end
   end
 
   # Initialize wavefunction to be bond 
