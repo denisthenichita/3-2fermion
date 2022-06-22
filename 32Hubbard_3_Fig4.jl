@@ -1,5 +1,6 @@
 using ITensors
 using LinearAlgebra
+using Plots
 include("electron3.jl")
 #
 # DMRG calculation of the extended Hubbard model
@@ -40,11 +41,11 @@ let
   BLAS.set_num_threads(1)
   ITensors.enable_threaded_blocksparse()
 
-  N_phys=72
+  N_phys=48
   N = 2*N_phys
   Npart = N_phys
   t = 1
-  U = -2
+  U = -8
 
   sites = siteinds(n->isodd(n) ? "Electron" : "Electron3",N; conserve_qns=true)
 
@@ -79,12 +80,17 @@ let
 
   state = ["Emp" for n in 1:N]
   
-  for i in 1:2:5
-    state[i]="Dn"
+
+  for i in 1:8
+    if i%2==0
+        state[i]="Up"
+    else
+        state[i]="UpDn"
+    end
   end
 
-  for i in 8:2:N
-    state[i]="Up"
+  for i in 9:26
+    state[i]="UpDn"
   end
   
   
@@ -178,19 +184,20 @@ let
   println("\n<T3/2> = $avgT")
 
 
-  ################## <Q>
-  ampo = OpSum()
-
+  ################## <Qi> vs i
+  
+  avgQ = zeros(Float64, 50)
   for b_phys in 1:N_phys
     b=2*b_phys-1
     # the n's for different alpha&i commute between them
-    ampo += "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1  
+    ampo = OpSum()
+    ampo += "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1 
+    Q=MPO(ampo,sites)
+    avgQ[b_phys] = inner(psi',Q,psi)/N_phys 
   end
-
-  Q=MPO(ampo,sites)
-
-  avgQ = inner(psi',Q,psi)/N_phys
-  println("\n<Q> = $avgQ")
+  b = 1:50 
+  plotQ = plot(b,avgQ)
+  savefig(plotQ,"Fig4.png")
 
   ################## p*L = sum alpha*<n>
   ampo = OpSum()
@@ -208,11 +215,6 @@ let
   avgpL = inner(psi',pL,psi)
   println("\n pL = $avgpL")
 
-  A3 = [0.83488282174408,1]
-  A1 = [0.001549487944292148,0]
-  P2 = [0.0817838449531834,0]
-  T3 = [3.048499671649654e-12,0]
-  Q0 = [4.676621571375897e-292,0]
-  poL = [102,108]
+  
 
 end
