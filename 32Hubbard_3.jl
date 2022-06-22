@@ -78,12 +78,16 @@ let
 
 
   state = ["Emp" for n in 1:N]
-  for i in 1:Int(N)
-    if i%2==0
-      state[i]="Up"
-      @show i
-    end
+  
+  for i in 1:2:5
+    state[i]="Dn"
   end
+
+  for i in 8:2:N
+    state[i]="Up"
+  end
+  
+  
 
   # Initialize wavefunction to be bond 
   # dimension 10 random MPS with number
@@ -94,41 +98,13 @@ let
   @show flux(psi0)
 
 
-  etol = 1E-3
+  etol = 1E-5
   obs = DemoObserver(etol)
 
   # Start DMRG calculation:
-  energy, psi = dmrg(H, psi0, sweeps;obs)
+  energy, psi = dmrg(H, psi0, sweeps; observer=obs)
 
   println("\nGround State Energy = $energy")
-
-  ################## <Q>
-  ampo = OpSum()
-
-  for b_phys in 1:N_phys
-    b=2*b_phys-1
-    # the n's for different alpha&i commute between them
-    ampo += "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1  
-  end
-
-  Q=MPO(ampo,sites)
-
-  avgQ = inner(psi',Q,psi)/N_phys
-  println("\n<Q> = $avgQ")
-
-  ################## <T3/2>
-  ampo = OpSum()
-
-  for b_phys in 1:N_phys
-    b=2*b_phys-1
-    ampo += "Nup", b, "Ndn", b, "Nup", b+1  
-    ampo -= "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1    
-  end
-
-  T=MPO(ampo,sites)
-
-  avgT = inner(psi',T,psi)/N_phys
-  println("\n<T3/2> = $avgT")
 
   ################## <A3/2>
   ampo = OpSum()
@@ -149,6 +125,72 @@ let
 
   avgA = inner(psi',A,psi)/N_phys
   println("\n<A3/2> = $avgA")
+ 
+  ################## <A1/2>
+  ampo = OpSum()
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    ampo += "Nup", b
+    ampo -= "Nup", b, "Ndn", b+1
+    ampo -= "Ndn", b, "Nup", b
+    ampo -= "Nup", b+1, "Nup", b
+    ampo += "Nup", b+1, "Nup", b, "Ndn", b+1
+    ampo += "Nup", b+1, "Ndn", b, "Nup", b 
+    ampo += "Ndn", b, "Nup", b, "Ndn", b+1  
+    ampo -= "Nup", b+1, "Ndn", b, "Nup", b, "Ndn", b+1    
+  end
+
+  A12=MPO(ampo,sites)
+
+  avgA12 = inner(psi',A12,psi)/N_phys
+  println("\n<A1/2> = $avgA12")
+  
+  
+  ################## <P2,2>
+  ampo = OpSum()
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    ampo += "Nup", b, "Nup", b+1
+    ampo -= "Nup", b, "Nup", b+1, "Ndn", b+1
+    ampo -= "Nup", b, "Ndn", b, "Nup", b+1   
+    ampo += "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1    
+  end
+
+  P=MPO(ampo,sites)
+
+  avgP = inner(psi',P,psi)/N_phys
+  println("\n<P2,2> = $avgP")
+  
+  ################## <T3/2>
+  ampo = OpSum()
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    ampo += "Nup", b, "Ndn", b, "Nup", b+1  
+    ampo -= "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1    
+  end
+
+  T=MPO(ampo,sites)
+
+  avgT = inner(psi',T,psi)/N_phys
+  println("\n<T3/2> = $avgT")
+
+
+  ################## <Q>
+  ampo = OpSum()
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    # the n's for different alpha&i commute between them
+    ampo += "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1  
+  end
+
+  Q=MPO(ampo,sites)
+
+  avgQ = inner(psi',Q,psi)/N_phys
+  println("\n<Q> = $avgQ")
 
   ################## p*L = sum alpha*<n>
   ampo = OpSum()
@@ -166,5 +208,10 @@ let
   avgpL = inner(psi',pL,psi)
   println("\n pL = $avgpL")
 
+  A3 = [1]
+  A1 = [0]
+  P2 = [0]
+  Q0 = [0]
+  poL = [108]
 
 end
