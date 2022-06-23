@@ -41,7 +41,7 @@ let
   BLAS.set_num_threads(1)
   ITensors.enable_threaded_blocksparse()
 
-  N_phys=48
+  N_phys=20
   N = 2*N_phys
   Npart = N_phys
   t = 1
@@ -81,17 +81,15 @@ let
   state = ["Emp" for n in 1:N]
   
 
-  for i in 1:8
-    if i%2==0
-        state[i]="Up"
-    else
+  for i in 1:N-20
+    if i%2==1
         state[i]="UpDn"
+    elseif i%2==0
+        state[i]="Up"
     end
   end
 
-  for i in 9:26
-    state[i]="UpDn"
-  end
+  
   
   
 
@@ -104,7 +102,7 @@ let
   @show flux(psi0)
 
 
-  etol = 1E-5
+  etol = 1E-8
   obs = DemoObserver(etol)
 
   # Start DMRG calculation:
@@ -187,14 +185,16 @@ let
   ################## <Qi> vs i
   
   avgQ = zeros(Float64, 50)
+
   for b_phys in 1:N_phys
     b=2*b_phys-1
     # the n's for different alpha&i commute between them
     ampo = OpSum()
     ampo += "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1 
     Q=MPO(ampo,sites)
-    avgQ[b_phys] = inner(psi',Q,psi)/N_phys 
+    avgQ[b_phys] = inner(psi',Q,psi) 
   end
+
   b = 1:50 
   plotQ = plot(b,avgQ)
   savefig(plotQ,"Fig4.png")
