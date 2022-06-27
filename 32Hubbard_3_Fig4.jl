@@ -41,7 +41,7 @@ let
   BLAS.set_num_threads(1)
   ITensors.enable_threaded_blocksparse()
 
-  N_phys=20
+  N_phys=48
   N = 2*N_phys
   Npart = N_phys
   t = 1
@@ -75,23 +75,23 @@ let
   sweeps = Sweeps(100)
   setmaxdim!(sweeps, 5000)
   setcutoff!(sweeps, 1E-10)
-  setnoise!(sweeps,1E-2)
+  setnoise!(sweeps,1E-1)
 
 
   state = ["Emp" for n in 1:N]
   
 
-  for i in 1:N
-    if i%3==1
-        state[i]="Dn"
-    elseif i%3==2
+  for i in 1:24
+    if i%2==1
         state[i]="Up"
     end
   end
 
-
-  
-  
+  for i in 1:36
+    if i%2==0
+        state[i]="UpDn"
+    end
+end
 
   # Initialize wavefunction to be bond 
   # dimension 10 random MPS with number
@@ -102,7 +102,7 @@ let
   @show flux(psi0)
 
 
-  etol = 1E-8
+  etol = 1E-6
   obs = DemoObserver(etol)
 
   # Start DMRG calculation:
@@ -184,7 +184,7 @@ let
 
   ################## <Qi> vs i
   
-  avgQ = zeros(Float64, 50)
+  avgQ = zeros(Float64, N_phys)
 
   for b_phys in 1:N_phys
     b=2*b_phys-1
@@ -195,7 +195,7 @@ let
     avgQ[b_phys] = inner(psi',Q,psi) 
   end
 
-  b = 1:50 
+  b = 1:N_phys
   plotQ = plot(b,avgQ)
   savefig(plotQ,"Fig4.png")
 
