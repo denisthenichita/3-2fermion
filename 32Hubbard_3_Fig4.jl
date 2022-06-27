@@ -75,21 +75,21 @@ let
   sweeps = Sweeps(100)
   setmaxdim!(sweeps, 5000)
   setcutoff!(sweeps, 1E-10)
-  setnoise!(sweeps,1E-6)
+  setnoise!(sweeps,1E-2)
 
 
   state = ["Emp" for n in 1:N]
   
 
-  for i in 1:N-20
-    if i%2==1
-        state[i]="UpDn"
-    elseif i%2==0
+  for i in 1:N
+    if i%3==1
+        state[i]="Dn"
+    elseif i%3==2
         state[i]="Up"
     end
   end
 
-  
+
   
   
 
