@@ -197,6 +197,23 @@ end
 
   b = 1:N_phys
   plotQ = plot(b,avgQ)
+  savefig(plotQ,"Fig4.png") 
+
+    ################## <Qi> vs i
+  
+  avgQ = zeros(Float64, N_phys)
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    # the n's for different alpha&i commute between them
+    ampo = OpSum()
+    ampo += "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1 
+    Q=MPO(ampo,sites)
+    avgQ[b_phys] = inner(psi',Q,psi) 
+  end
+
+  b = 1:N_phys
+  plotQ = plot(b,avgQ)
   savefig(plotQ,"Fig4.png")
 
   ################## p*L = sum alpha*<n>
