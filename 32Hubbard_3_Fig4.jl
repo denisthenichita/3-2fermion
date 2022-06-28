@@ -220,7 +220,7 @@ end
   end
 
   b = 1:N_phys
-  plotQA = plot(b,[avgA32,avgQ],label = ["Q" "A3/2"])
+  plotQA = plot(b,[avgA32,avgQ],label = ["A3/2" "Q"])
   savefig(plotQA,"Fig4.png")
   
 
