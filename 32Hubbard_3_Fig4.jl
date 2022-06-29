@@ -87,7 +87,7 @@ let
     end
   end
 
-  for i in 1:48
+  for i in 1:36
     if i%2==0
         state[i]="UpDn"
     end
@@ -180,6 +180,20 @@ end
 
   avgT = inner(psi',T,psi)/N_phys
   println("\n<T3/2> = $avgT")
+
+  ################## <Q>
+  ampo = OpSum()
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    # the n's for different alpha&i commute between them
+    ampo += "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1  
+  end
+
+  Q=MPO(ampo,sites)
+
+  avgQ = inner(psi',Q,psi)/N_phys
+  println("\n<Q> = $avgQ")
 
 
   ################## <Qi> vs i
