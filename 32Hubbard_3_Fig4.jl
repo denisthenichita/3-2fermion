@@ -41,7 +41,7 @@ let
   BLAS.set_num_threads(1)
   ITensors.enable_threaded_blocksparse()
 
-  N_phys=10
+  N_phys=48
   N = 2*N_phys
   Npart = N_phys
   t = 1
@@ -81,13 +81,13 @@ let
   state = ["Emp" for n in 1:N]
   
 
-  for i in 1:5
+  for i in 1:24
     if i%2==1
         state[i]="Up"
     end
   end
 
-  for i in 6:10
+  for i in 1:48
     if i%2==0
         state[i]="UpDn"
     end
@@ -218,11 +218,22 @@ end
     A=MPO(ampo,sites)
     avgA32[b_phys] = inner(psi',A,psi) 
   end
-
-  b = 1:N_phys
-  plotQA = plot(b,[avgA32,avgQ],label = ["A3/2" "Q"])
-  savefig(plotQA,"Fig4.png")
   
+  ################## <T3/2i> vs i
+  
+  avgT = zeros(Float64, N_phys)
+
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    ampo += "Nup", b, "Ndn", b, "Nup", b+1  
+    ampo -= "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1   
+    T=MPO(ampo,sites)
+    avgT[b_phys] = inner(psi',T,psi) 
+  end
+  
+  b = 1:N_phys
+  plotQA = plot(b,[avgT,avgA32,avgQ],label = ["T3/2" "A3/2" "Q"])
+  savefig(plotQA,"Fig4.png")
 
   ################## p*L = sum alpha*<n>
   ampo = OpSum()
