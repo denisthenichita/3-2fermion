@@ -41,13 +41,71 @@ let
   BLAS.set_num_threads(1)
   ITensors.enable_threaded_blocksparse()
 
-  N_phys=10
+  N_phys=16
   N = 2*N_phys
   Npart = N_phys
   t = 1
   U = -8
 
   sites = siteinds(n->isodd(n) ? "Electron" : "Electron3",N; conserve_qns=true)
+  
+  sweeps = Sweeps(3)
+  setmaxdim!(sweeps, 5000)
+  setcutoff!(sweeps, 1E-10)
+  setnoise!(sweeps,1E-6)
+
+  etol = 1E-6
+  obs = DemoObserver(etol)
+  
+  
+  ampo = OpSum()
+
+  for b_phys in 1:(N_phys - 1)
+    b=2*b_phys-1
+    ampo += -t, "Cdagup", b, "Cup", b + 2
+    ampo += -t, "Cdagup", b + 2, "Cup", b
+    ampo += -t, "Cdagup", b+1, "Cup", b + 3
+    ampo += -t, "Cdagup", b + 3, "Cup", b+1
+    ampo += -t, "Cdagdn", b, "Cdn", b + 2
+    ampo += -t, "Cdagdn", b + 2, "Cdn", b
+    ampo += -t, "Cdagdn", b+1, "Cdn", b + 3
+    ampo += -t, "Cdagdn", b + 3, "Cdn", b+1
+  end
+
+  H = MPO(ampo, sites)
+  H = splitblocks(linkinds, H)
+  
+  state = ["Emp" for n in 1:N]
+  
+
+  for i in 12:24
+    if i%2==1
+        state[i]="Up"
+    end
+  end
+
+  for i in 5:18
+    if i%2==0
+        state[i]="UpDn"
+    end
+end
+
+  # Initialize wavefunction to be bond 
+  # dimension 10 random MPS with number
+  # of particles the same as `state`
+  psi0 = randomMPS(sites, state)
+  
+  # Check total number of particles:
+  @show flux(psi0)
+
+
+
+  # Start DMRG calculation:
+  energy, psi = dmrg(H, psi0, sweeps; observer=obs)
+
+  println("\nGround State Energy = $energy")
+
+
 
   ampo = OpSum()
 
@@ -71,44 +129,19 @@ let
   end
   H = MPO(ampo, sites)
   H = splitblocks(linkinds, H)
+
   
   sweeps = Sweeps(100)
   setmaxdim!(sweeps, 5000)
   setcutoff!(sweeps, 1E-10)
-  setnoise!(sweeps,1E-1)
-
-
-  state = ["Emp" for n in 1:N]
+  setnoise!(sweeps,1E-6)
   
-
-  for i in 3:10
-    if i%2==1
-        state[i]="Up"
-    end
-  end
-
-  for i in 5:10
-    if i%2==0
-        state[i]="UpDn"
-    end
-end
-
-  # Initialize wavefunction to be bond 
-  # dimension 10 random MPS with number
-  # of particles the same as `state`
-  psi0 = MPS(sites, state)
-  
-  # Check total number of particles:
-  @show flux(psi0)
-
-
-  etol = 1E-6
-  obs = DemoObserver(etol)
-
   # Start DMRG calculation:
-  energy, psi = dmrg(H, psi0, sweeps; observer=obs)
+  energy, psi_new = dmrg(H, psi, sweeps; observer=obs)
 
   println("\nGround State Energy = $energy")
+
+  psi=psi_new
 
   ################## <A3/2>
   ampo = OpSum()
@@ -239,6 +272,7 @@ end
 
   for b_phys in 1:N_phys
     b=2*b_phys-1
+    ampo = OpSum()
     ampo += "Nup", b, "Ndn", b, "Nup", b+1  
     ampo -= "Nup", b, "Ndn", b, "Nup", b+1, "Ndn", b+1   
     T=MPO(ampo,sites)
