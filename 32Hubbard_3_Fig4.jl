@@ -41,7 +41,7 @@ let
   BLAS.set_num_threads(1)
   ITensors.enable_threaded_blocksparse()
 
-  N_phys=48
+  N_phys=10
   N = 2*N_phys
   Npart = N_phys
   t = 1
@@ -81,13 +81,13 @@ let
   state = ["Emp" for n in 1:N]
   
 
-  for i in 1:24
+  for i in 3:10
     if i%2==1
         state[i]="Up"
     end
   end
 
-  for i in 1:36
+  for i in 5:10
     if i%2==0
         state[i]="UpDn"
     end
@@ -96,7 +96,7 @@ end
   # Initialize wavefunction to be bond 
   # dimension 10 random MPS with number
   # of particles the same as `state`
-  psi0 = randomMPS(sites, state)
+  psi0 = MPS(sites, state)
   
   # Check total number of particles:
   @show flux(psi0)
@@ -246,7 +246,7 @@ end
   end
   
   b = 1:N_phys
-  plotQA = plot(b,[avgT,avgA32,avgQ],label = ["T3/2" "A3/2" "Q"])
+  plotQA = plot(b,[avgQ,avgT,avgA32],label = ["Q" "T3/2" "A3/2"],color=["red" "blue" "green"])
   savefig(plotQA,"Fig4.png")
 
   ################## p*L = sum alpha*<n>
