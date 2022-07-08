@@ -42,10 +42,10 @@ let
   BLAS.set_num_threads(1)
   ITensors.disable_threaded_blocksparse()
 
-  N = 3
-  Npart = 4
+  N = 72
+  Npart = 72
   t = 1
-  U = -1
+  U = -2
 
   sites = siteinds("3/2fermion", N; conserve_qns=true)
 
