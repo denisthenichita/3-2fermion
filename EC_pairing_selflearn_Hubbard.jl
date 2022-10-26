@@ -26,6 +26,9 @@ n_G=100
 
 G_cr = 0.22210
 
+t = 1
+U = -8
+
 G_min=0.0
 G_max=10.0*G_cr
 
@@ -85,16 +88,20 @@ function h_part(j,sites)
   end
 
   if(j==2)
-    # H_{single particle}
-    ϵ = fill(0.0, L)
-    for i in 1:L
-      ϵ[i]=convert(Float64,i)
-    end
+    # H_hopping
     
     ampo = OpSum()
-    for i in 1:L
-      ampo .+= ϵ[i], "Ntot", i  
-    end
+    for b_phys in 1:(L - 1)
+        b=2*b_phys-1
+        ampo += -t, "Cdagup", b, "Cup", b + 2
+        ampo += -t, "Cdagup", b + 2, "Cup", b
+        ampo += -t, "Cdagup", b+1, "Cup", b + 3
+        ampo += -t, "Cdagup", b + 3, "Cup", b+1
+        ampo += -t, "Cdagdn", b, "Cdn", b + 2
+        ampo += -t, "Cdagdn", b + 2, "Cdn", b
+        ampo += -t, "Cdagdn", b+1, "Cdn", b + 3
+        ampo += -t, "Cdagdn", b + 3, "Cdn", b+1
+      end
 
     ehf=0.0
     for i in 1:fermi
@@ -105,15 +112,14 @@ function h_part(j,sites)
   end
 
   if(j==3)
-    # H_pairing
+    # H_density
     ampo = OpSum()
-    for i in 1:L
-      for j in 1:L
-        #if(i!=j)
-          ampo .+= "Cdagup", i, "Cdagdn", i, "Cdn", j, "Cup", j
-        #end
+    for b_phys in 1:N_phys
+        b=2*b_phys-1
+        ampo += (U/2), "Ntot", b, "Ntot", b 
+        ampo += (U/2), "Ntot", b+1, "Ntot", b+1 
+        ampo += U, "Ntot", b, "Ntot", b+1 
       end
-    end
     return MPO(ampo, sites)
   end
 
@@ -141,22 +147,24 @@ end
 
 function total_Hamiltonian(sites,G)
 
-  ϵ = fill(0.0, L)
-  for i in 1:L
-    ϵ[i]=convert(Float64,i)
-  end
-
   ampo = OpSum()
-  for i in 1:L
-    ampo .+= ϵ[i], "Ntot", i  
+  for b_phys in 1:(N_phys - 1)
+    b=2*b_phys-1
+    ampo += -t, "Cdagup", b, "Cup", b + 2
+    ampo += -t, "Cdagup", b + 2, "Cup", b
+    ampo += -t, "Cdagup", b+1, "Cup", b + 3
+    ampo += -t, "Cdagup", b + 3, "Cup", b+1
+    ampo += -t, "Cdagdn", b, "Cdn", b + 2
+    ampo += -t, "Cdagdn", b + 2, "Cdn", b
+    ampo += -t, "Cdagdn", b+1, "Cdn", b + 3
+    ampo += -t, "Cdagdn", b + 3, "Cdn", b+1
   end
 
-  for i in 1:L
-    for j in 1:L
-      #if(i!=j)
-      ampo .+= -G,"Cdagup", i, "Cdagdn", i, "Cdn", j, "Cup", j
-      #end
-    end
+  for b_phys in 1:N_phys
+    b=2*b_phys-1
+    ampo += (U/2), "Ntot", b, "Ntot", b 
+    ampo += (U/2), "Ntot", b+1, "Ntot", b+1 
+    ampo += U, "Ntot", b, "Ntot", b+1 
   end
 
   #ehf=0.0
