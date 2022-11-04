@@ -14,7 +14,7 @@ cutoff = 1E-15
 etol   = 1E-11
 
 
-L=2 #levels (EVEN NUMBER!!!!)
+L=20 #levels (EVEN NUMBER!!!!)
 
 
 sites = siteinds("Electron", L;conserve_qns=true)    
@@ -24,16 +24,16 @@ fermi=Int.(N_part/2)
 
 n_G=5000
 
-G_cr = 0.2221
+G_cr = 0.2674
 
 G_min=0.0
 G_max=10.0*G_cr
 
 dim_EC_max=60
 
-norm_sv_threshold = 1E-7
+norm_sv_threshold = 1E-15
 
-error_threshold = 1E-2
+error_threshold = 1E-3
 
 ψ_ec      = Array{MPS}(undef,dim_EC_max)
 H_ψ_ec    = Array{MPS}(undef,3,dim_EC_max)
@@ -206,11 +206,9 @@ end
       end
     end
 
-    if(is_in_basis)
-
-      return 1E-30
+   
     
-    else    
+     
 
       G=G_min+(i_G-1.0)*(G_max-G_min)/(n_G-1.0)
 
@@ -256,8 +254,8 @@ end
         ggap=0.5*N_j*(1-0.5*N_j)
 
         if(ggap<0.0&&abs(ggap)<1E-10)
-            gap[i_G]=0.0
-            #@show ggap
+            @show ggap,i_G
+            ggap = 0.0   
         else
            gap[i_G] += G*sqrt(ggap)
         end 
@@ -272,8 +270,13 @@ end
       if(err<0.0)
         err=1E-10
       end
+
+      if(is_in_basis)
+        err= 1E-30
+      end
+      
       return err
-    end
+    
   
   end
 
@@ -369,7 +372,9 @@ for dim_EC in 1:dim_EC_max
     end
     end
 
+   
     norm_eig_vecs[:,i]=norm_eig_vecs[:,i]/sqrt(nrm)
+    
   end
 
   norm_eig_vals = eig.values;
@@ -483,9 +488,10 @@ for dim_EC in 1:dim_EC_max
   end
 
   open("pairing_selflearn_gap_"*string(L)*".txt", "a") do g  # "w" for writing, "a" for appending
-    for i_G in 1:n_G
-      write(g,"$(gap[i_G])  \n")
-    end
+   
+      write(g,"$(gap[1:n_G])")
+      write(g,"\n")
+    
     
   end
 
