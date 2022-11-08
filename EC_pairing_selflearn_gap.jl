@@ -14,7 +14,7 @@ cutoff = 1E-15
 etol   = 1E-11
 
 
-L=20 #levels (EVEN NUMBER!!!!)
+L=100 #levels (EVEN NUMBER!!!!)
 
 
 sites = siteinds("Electron", L;conserve_qns=true)    
@@ -24,7 +24,8 @@ fermi=Int.(N_part/2)
 
 n_G=5000
 
-G_cr = 0.2674
+#G_cr = 0.2674 L=20
+G_cr = 0.18224
 
 G_min=0.0
 G_max=10.0*G_cr
@@ -254,7 +255,7 @@ end
         ggap=0.5*N_j*(1-0.5*N_j)
 
         if(ggap<0.0&&abs(ggap)<1E-10)
-            @show ggap,i_G
+            #@show ggap,i_G
             ggap = 0.0   
         else
            gap[i_G] += G*sqrt(ggap)
