@@ -5,8 +5,6 @@ export main
 using ITensors
 using LinearAlgebra
 using DelimitedFiles
-include("neutron.jl")
-include("proton.jl")
 
 BLAS.set_num_threads(1)
 ITensors.Strided.disable_threads()
@@ -16,22 +14,22 @@ cutoff = 1E-15
 etol   = 1E-11
 
 
-L=20 #levels (EVEN NUMBER!!!!)
+L=12 #levels (EVEN NUMBER!!!!)
 
 
-sites = siteinds(n->isodd(n) ? "Neutron" : "Proton",2*L; conserve_qns=true)
-no_n=10
-no_p=8
+sites = siteinds("Fermion", L;conserve_qns=true)    
 
-N_part=L
-fermi=Int.(N_part/2)
+N_part=L/4
 
 n_G=5000
 
-G_cr = 0.2674
+pi=4.0*atan(1.0)
+
+#G_cr = 0.2674 L=20
+#G_cr = 0.18224
 
 G_min=0.0
-G_max=10.0*G_cr
+G_max=4
 
 dim_EC_max=60
 
@@ -41,8 +39,7 @@ error_threshold = 1E-3
 
 ψ_ec      = Array{MPS}(undef,dim_EC_max)
 H_ψ_ec    = Array{MPS}(undef,3,dim_EC_max)
-ψNψ    = fill(0.0,(dim_EC_max,L,dim_EC_max))
-ψNψ_red    = fill(0.0,(dim_EC_max,L,dim_EC_max))
+
 
 h_mat     = fill(0.0,(3,3,dim_EC_max,dim_EC_max))
 h_mat_red = fill(0.0,(3,3,dim_EC_max,dim_EC_max))
@@ -87,40 +84,43 @@ end
 
 
 
-function h_part(k,sites)
-  N=length(sites)
 
-  if(k==1)
-    
+function h_part(j,sites)
+
+  if(j==1)
     return MPO(sites, "Id")
   end
 
-  if(k==2)
+  if(j==2)
+    # H_{hopping}
+    
+    
     ampo = OpSum()
-    # H_{single particle}
-    for i in 1:2:N-1
-        ampo .+= (i-1)/2, "Ntot", i    # neutron single particle energies
-        ampo .+= (i-1)/2, "Ntot", i+1  # proton  single particle energies
-      end
+    for i in 1:(L-1)
+      ampo .+= -1, "Cdag", i, "C", i+1
+      ampo .+= -1, "Cdag", i+1, "C", i  
+    end
 
     return  MPO(ampo, sites;cutoff=1E-30)
   end
 
-  if(k==3)
+  if(j==3)
     # H_pairing
     ampo = OpSum()
-    for i in 1:2:N-1
-        for j in 1:2:N-1
-          ampo .+=  "Cdagup", i  , "Cdagdn", i  , "Cdn", j  , "Cup", j   #nn pairing
-    
-          ampo .+=  "Cdagup", i+1, "Cdagdn", i+1, "Cdn", j+1, "Cup", j+1 #pp pairing
-    
-          ampo .+=  "Cdagup", i  , "Cdagdn", i+1, "Cdn", j+1, "Cup", j   #iv pn pairing
-          ampo .+=  "Cdagup", i  , "Cdagdn", i+1, "Cdn", j  , "Cup", j+1 #iv pn pairing
-          ampo .+=  "Cdagup", i+1, "Cdagdn", i  , "Cdn", j+1, "Cup", j   #iv pn pairing
-          ampo .+=  "Cdagup", i+1, "Cdagdn", i  , "Cdn", j  , "Cup", j+1 #iv pn pairing
-        end
+    for j in 1:L
+      for i in (j+1):L
+        for s in 1:L
+            for r in (s+1):L 
+                m1=i-j
+                m2=s-r      
+                eta1=((-1)^m1*8*m1)/pi/(1-4*m1^2)
+                eta2=((-1)^m2*8*m2)/pi/(1-4*m2^2)
+                eta = eta1*eta2
+                ampo .+= eta, "Cdag", j, "Cdag", i, "C", r, "C", s
+            end
+        end      
       end
+    end
     return MPO(ampo, sites;cutoff=1E-30)
   end
 end
@@ -146,29 +146,27 @@ end
 
 
 function total_Hamiltonian(sites,G)
-    N=length(sites)
 
-    #neutrons sites: 1,3,5,7,...,N-3,N-1
-    #protons  sites: 2,4,6,8,...,N-2,N
-  
-    ampo = OpSum()
-    for i in 1:2:N-1
-        ampo .+= (i-1)/2, "Ntot", i    # neutron single particle energies
-        ampo .+= (i-1)/2, "Ntot", i+1  # proton  single particle energies
-      end
-      
-      for i in 1:2:N-1
-        for j in 1:2:N-1
-          ampo .+= -G  , "Cdagup", i  , "Cdagdn", i  , "Cdn", j  , "Cup", j   #nn pairing
-    
-          ampo .+= -G  , "Cdagup", i+1, "Cdagdn", i+1, "Cdn", j+1, "Cup", j+1 #pp pairing
-    
-          ampo .+= -G, "Cdagup", i  , "Cdagdn", i+1, "Cdn", j+1, "Cup", j   #iv pn pairing
-          ampo .+= -G, "Cdagup", i  , "Cdagdn", i+1, "Cdn", j  , "Cup", j+1 #iv pn pairing
-          ampo .+= -G, "Cdagup", i+1, "Cdagdn", i  , "Cdn", j+1, "Cup", j   #iv pn pairing
-          ampo .+= -G, "Cdagup", i+1, "Cdagdn", i  , "Cdn", j  , "Cup", j+1 #iv pn pairing
-        end
-      end
+  ampo = OpSum()
+  for i in 1:(L-1)
+    ampo .+= -1, "Cdag", i, "C", i+1
+    ampo .+= -1, "Cdag", i+1, "C", i  
+  end
+
+  for j in 1:L
+    for i in (j+1):L
+      for s in 1:L
+          for r in (s+1):L 
+              m1=i-j
+              m2=s-r      
+              eta1=((-1)^m1*8*m1)/pi/(1-4*m1^2)
+              eta2=((-1)^m2*8*m2)/pi/(1-4*m2^2)
+              eta=eta1*eta2*(-2*G)
+              ampo .+= eta, "Cdag", j, "Cdag", i, "C", r, "C", s
+          end
+      end      
+    end
+  end
 
   H=MPO(ampo, sites;cutoff=1E-30)
   #H = splitblocks(linkinds, H)
@@ -281,23 +279,17 @@ end
 indices_EC[1]=1
 G_EC=0.0  
 
-N=length(sites)
 
-ψ₀₀ = ["Emp" for n in 1:N]
+ψ₀₀ = ["Emp" for n in 1:L]
 
-#initial occupation at half-filling
-  for i in 1:2:no_n-1
-    ψ₀₀[i] = "UpDn"
-  end
-
-  for i in 2:2:no_p
-    ψ₀₀[i] = "UpDn"
-  end
-
+#initial occupation at sparse quarter-filling
+for i in 1:L
+    if i%4==0
+        ψ₀₀[i] = "Occ"
+    end
+end
 
 ψ_init = randomMPS(sites,ψ₀₀)
-
-
 
 #loop over number of points dim_EC chosen in parameter space
 for dim_EC in 1:dim_EC_max
@@ -306,25 +298,21 @@ for dim_EC in 1:dim_EC_max
 
   #dmrg for the new parameter value 
   ψ_ec[dim_EC]=richardson_dmrg(sites,G_EC,ψ_init)
-  @show flux(ψ_ec[dim_EC])
-
+  
   println(" ")
-  print("Hⱼ|ξₙ⟩")
+
   using_threaded_blocksparse = ITensors.disable_threaded_blocksparse()
 
-  @time begin
-    Threads.@threads for i in 1:3
-      H_ψ_ec[i,dim_EC]=apply(hh[i], ψ_ec[dim_EC]; cutoff=1e-30)
-    end
-  end
+
   print("⟨Hⱼξₙ|Hⱼ'ξₙ'⟩")
 
+ 
 
   @time begin
       Threads.@threads for index_3D in CartesianIndices((dim_EC,3,3))
   
         h_mat[Tuple(index_3D)[2],Tuple(index_3D)[3],dim_EC,Tuple(index_3D)[1]]=
-                            inner(H_ψ_ec[Tuple(index_3D)[2],dim_EC],H_ψ_ec[Tuple(index_3D)[3],Tuple(index_3D)[1]])
+                            inner(hh[Tuple(index_3D)[2]],ψ_ec[dim_EC],hh[Tuple(index_3D)[3]],ψ_ec[Tuple(index_3D)[1]])
       end
   
       for j in 1:dim_EC
@@ -394,7 +382,6 @@ for dim_EC in 1:dim_EC_max
     end 
     end
 
-  
 
   println(" ")
   print("error scan")
@@ -431,7 +418,7 @@ for dim_EC in 1:dim_EC_max
   @show G_EC
 
 
-  open("pairing_selflearn_sv7_"*string(L)*".txt", "a") do g  # "w" for writing, "a" for appending
+  open("pairing_selflearn_RGK_"*string(L)*".txt", "a") do g  # "w" for writing, "a" for appending
    
 
     write(g,"$(norm_eig_vals[1:dim_EC]) ")
@@ -440,7 +427,7 @@ for dim_EC in 1:dim_EC_max
   end
 
 
-  open("pairing_selflearn_sv7_errs_"*string(L)*".txt", "a") do g  # "w" for writing, "a" for appending
+  open("pairing_selflearn_RGK_errs_"*string(L)*".txt", "a") do g  # "w" for writing, "a" for appending
    
     for i_G in 1:n_G
       write(g,"$(sqrt(errors[i_G])) ")
@@ -448,7 +435,7 @@ for dim_EC in 1:dim_EC_max
     write(g,"\n")
   end
 
-  open("pairing_selflearn_err_max_sv7_"*string(L)*".txt", "a") do g  # "w" for writing, "a" for appending
+  open("pairing_selflearn_err_max_RGK_"*string(L)*".txt", "a") do g  # "w" for writing, "a" for appending
     write(g,"$(sqrt(err_max))  \n")
   end
 
